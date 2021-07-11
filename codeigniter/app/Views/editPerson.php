@@ -16,7 +16,7 @@ $validation = \Config\Services::validation();
                                 <div class="form-group">
                                     <label for="edit-prename">Prename:</label>
                                     <input type="text" class="form-control" name="edit-prename" id="edit-prename"
-                                           placeholder="Peter" value="<?= $person->vorname ?>">
+                                           placeholder="Peter" value="<?= $person->prename ?>">
                                 </div>
                             </div>
                             <?php
@@ -54,7 +54,7 @@ $validation = \Config\Services::validation();
                                 <div class="form-group">
                                     <label for="edit-street">Street:</label>
                                     <input type="text" class="form-control" name="edit-street" id="edit-street"
-                                           placeholder="Musterstr. 11" value="<?= $person->strasse?>">
+                                           placeholder="Musterstr. 11" value="<?= $person->street?>">
                                 </div>
                             </div>
                             <?php
@@ -73,7 +73,7 @@ $validation = \Config\Services::validation();
                                 <div class="form-group">
                                     <label for="edit-postcode">Postcode:</label>
                                     <input type="text" class="form-control" name="edit-postcode" id="edit-postcode"
-                                           placeholder="54299" value="<?= $person->plz?>">
+                                           placeholder="54299" value="<?= $person->zip?>">
                                 </div>
                             </div>
                             <?php
@@ -92,7 +92,7 @@ $validation = \Config\Services::validation();
                                 <div class="form-group">
                                     <label for="edit-city">City:</label>
                                     <input type="text" class="form-control" name="edit-city" id="edit-city"
-                                           placeholder="Musterhausen" value="<?= $person->ort?>">
+                                           placeholder="Musterhausen" value="<?= $person->city?>">
                                 </div>
                             </div>
                             <?php

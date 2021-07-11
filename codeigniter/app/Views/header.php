@@ -4,7 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" type="image/x-icon" href="logo.ico">
-    <title>PWA 0</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <title>PWA 1</title>
+
+    <link rel="apple-touch-icon" href="icon/icon96.png">
+    <meta name="apple-mobile-web-app-status-bar" content="#aa7700">
 
 
     <!--Bootstrap CSS-->
@@ -22,9 +26,10 @@ $session = \Config\Services::session();
 ?>
 
 <nav class="navbar navbar-light bg-light sticky-top">
-    <a class="navbar-brand" href="/">PWA 0</a>
+    <a class="navbar-brand" href="/">PWA 1</a>
     <?php if ($session->get('isLoggedIn')): ?>
     <div class="ml-auto d-flex">
+        <button id="pushButton" class="btn btn-primary mr-2 d-flex justify-content-center align-items-center">Enable Push Notifications</button>
         <a href="/logout" class="btn btn-warning mr-2">Logout</a>
         <div class="bg-success d-flex justify-content-center align-items-center p-2">
             Online

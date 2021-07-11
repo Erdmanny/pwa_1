@@ -73,11 +73,11 @@ $validation = \Config\Services::validation();
                                 </div>
                             </div>
                             <?php
-                            if ($validation->getError('new-plz')):
+                            if ($validation->getError('new-postcode')):
                                 ?>
                                 <div class="col-12">
                                     <div class="alert alert-danger" role="alert">
-                                        <?= $validation->getError('new-plz') ?>
+                                        <?= $validation->getError('new-postcode') ?>
                                     </div>
                                 </div>
                             <?php

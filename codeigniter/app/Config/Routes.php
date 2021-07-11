@@ -33,6 +33,7 @@ $routes->setAutoRoute(true);
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'User::index', ['filter' => 'noauth']);
+$routes->get('fallback', 'Fallback::index');
 $routes->get('people', 'People::index', ['filter' => 'auth']);
 $routes->get('user', 'User::index', ['filter' => 'auth']);
 $routes->get('addPerson', 'People::addPerson', ['filter' => 'auth']);

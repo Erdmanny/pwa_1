@@ -6,7 +6,7 @@ use Config\Database;
 class PeopleModel extends Model
 {
 
-    private $_people;
+    private $_people, $_db;
 
     /**
      * Pwa_model constructor.
@@ -14,8 +14,8 @@ class PeopleModel extends Model
      */
     public function __construct()
     {
-        $this->db = Database::connect();
-        $this->_people = $this->db->table('personen');
+        $this->_db = Database::connect();
+        $this->_people = $this->_db->table('people');
     }
 
 
@@ -31,21 +31,22 @@ class PeopleModel extends Model
      * @param $surname
      * @param $name
      * @param $street
-     * @param $plz
+     * @param $zip
      * @param $city
      *
      * insert new person into the database
      */
-    public function addPerson($surname, $name, $street, $plz, $city, $created_by) {
+    public function addPerson($surname, $name, $street, $zip, $city, $created_by) {
         $data = [
-            'vorname' => $surname,
+            'prename' => $surname,
             'name' => $name,
-            'strasse' => $street,
-            'plz' => $plz,
-            'ort' => $city,
+            'street' => $street,
+            'zip' => $zip,
+            'city' => $city,
             'created_by' => $created_by
         ];
         $this->_people->insert($data);
+        return $this->_db->insertID();
     }
 
 
@@ -67,19 +68,19 @@ class PeopleModel extends Model
      * @param $surname
      * @param $name
      * @param $street
-     * @param $plz
+     * @param $zip
      * @param $city
      *
      * update person with $id by given values
      */
-    public function updatePerson($id, $surname, $name, $street, $plz, $city, $edited_by){
+    public function updatePerson($id, $surname, $name, $street, $zip, $city, $edited_by){
         $this->_people->where("id", $id);
         $data = [
-            'vorname' => $surname,
+            'prename' => $surname,
             'name' => $name,
-            'strasse' => $street,
-            'plz' => $plz,
-            'ort' => $city,
+            'street' => $street,
+            'zip' => $zip,
+            'city' => $city,
             'edited_by' => $edited_by
         ];
         $this->_people->update($data);

@@ -2,7 +2,8 @@
 
 use App\Models\UserModel;
 use CodeIgniter\Model;
-
+use Minishlink\WebPush\WebPush;
+use Minishlink\WebPush\Subscription;
 
 class User extends BaseController
 {
@@ -61,6 +62,7 @@ class User extends BaseController
 
         echo view('footer');
     }
+
 
 
     public function register()
@@ -124,4 +126,5 @@ class User extends BaseController
         $this->_session->destroy();
         return redirect()->to('/');
     }
+
 }

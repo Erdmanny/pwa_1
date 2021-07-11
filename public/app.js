@@ -27,9 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(subscription => {
             console.log("Subscription: " + JSON.stringify(subscription));
             if (subscription === null) {
-                pushButton.textContent = 'Enable Push Notifications';
+                pushButton.textContent = 'Allow Push';
             } else {
-                pushButton.textContent = 'Disable Push Notifications'
+                pushButton.textContent = 'Stop Push';
             }
         });
 
@@ -43,11 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         .then(res => {
                             console.log("subscribe: " + res);
                         });
-                    pushButton.textContent = 'Disable Push notifications';
+                    pushButton.textContent = 'Stop Push';
                 } else {
                     if (confirm("are you sure you want to unsubscribe?")) {
                         push_unsubscribe();
-                        pushButton.textContent = 'Enable Push notifications'
+                        pushButton.textContent = 'Allow Push'
                     }
                 }
             });

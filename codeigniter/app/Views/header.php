@@ -29,7 +29,7 @@ $session = \Config\Services::session();
     <a class="navbar-brand" href="/">PWA 1</a>
     <?php if ($session->get('isLoggedIn')): ?>
     <div class="ml-auto d-flex">
-        <button id="pushButton" class="btn btn-primary mr-2 d-flex justify-content-center align-items-center">Enable Push Notifications</button>
+        <button id="pushButton" class="btn btn-primary mr-2 d-flex justify-content-center align-items-center">Allow Push</button>
         <a href="/logout" class="btn btn-warning mr-2">Logout</a>
         <div class="bg-success d-flex justify-content-center align-items-center p-2">
             Online

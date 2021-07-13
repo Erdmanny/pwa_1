@@ -5,53 +5,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const pushButton = document.getElementById('pushButton');
 
-    // pushButton.addEventListener('click', () => {
-    //     console.log(isPushEnabled);
-    //     if (isPushEnabled) {
-    //         if (confirm("are you sure you want to unsubscribe?")) {
-    //             push_unsubscribe();
-    //             pushButton.textContent = 'Enable Push notifications'
-    //         }
-    //     } else {
-    //         push_subscribe()
-    //             .then(res => {
-    //                 console.log("subscribe: " + res);
-    //             });
-    //         pushButton.textContent = 'Disable Push notifications';
-    //     }
-    // });
-
-    navigator.serviceWorker.ready
-        .then(serviceWorkerRegistration =>
-            serviceWorkerRegistration.pushManager.getSubscription())
-        .then(subscription => {
-            console.log("Subscription: " + JSON.stringify(subscription));
-            if (subscription === null) {
-                pushButton.textContent = 'Allow Push';
-            } else {
-                pushButton.textContent = 'Stop Push';
-            }
-        });
-
-    pushButton.addEventListener('click', () => {
+    if (pushButton !== null) {
         navigator.serviceWorker.ready
             .then(serviceWorkerRegistration =>
                 serviceWorkerRegistration.pushManager.getSubscription())
             .then(subscription => {
+                console.log("Subscription: " + JSON.stringify(subscription));
                 if (subscription === null) {
-                    push_subscribe()
-                        .then(res => {
-                            console.log("subscribe: " + res);
-                        });
-                    pushButton.textContent = 'Stop Push';
+                    pushButton.textContent = 'Allow Push';
                 } else {
-                    if (confirm("are you sure you want to unsubscribe?")) {
-                        push_unsubscribe();
-                        pushButton.textContent = 'Allow Push'
-                    }
+                    pushButton.textContent = 'Stop Push';
                 }
             });
-    });
+
+
+        pushButton.addEventListener('click', () => {
+            navigator.serviceWorker.ready
+                .then(serviceWorkerRegistration =>
+                    serviceWorkerRegistration.pushManager.getSubscription())
+                .then(subscription => {
+                    if (subscription === null) {
+                        push_subscribe()
+                            .then(res => {
+                                console.log("subscribe: " + res);
+                            });
+                        pushButton.textContent = 'Stop Push';
+                    } else {
+                        if (confirm("are you sure you want to unsubscribe?")) {
+                            push_unsubscribe();
+                            pushButton.textContent = 'Allow Push'
+                        }
+                    }
+                });
+        });
+    }
 
 
     if (!navigator.serviceWorker) {

@@ -21,10 +21,6 @@
 
 <body class="bg-dark">
 
-<?php
-$session = \Config\Services::session();
-?>
-
 <nav class="navbar navbar-light bg-light sticky-top">
     <a class="navbar-brand" href="/">PWA 1</a>
     <div class="ml-auto d-flex">

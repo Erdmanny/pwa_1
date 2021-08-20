@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Models\PeopleModel;
 use App\Models\PushNotificationsModel;
+use CodeIgniter\HTTP\ResponseInterface;
+use Exception;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 
@@ -18,26 +20,20 @@ class People extends BaseController
         $this->_session = \Config\Services::session();
     }
 
-    public function index()
+    public function index(): string
     {
         $data['people'] = $this->_peopleModel->getPeople();
-        echo view('header');
-        echo view('people', $data);
-        echo view('footer');
+        return view('people', $data);
     }
 
-    public function addPerson()
+    public function addPerson(): string
     {
-        echo view('header');
-        echo view('addPerson');
-        echo view('footer');
+        return view('addPerson');
     }
 
     public function addPerson_Validation()
     {
         helper(['form', 'url']);
-
-        echo view('header');
 
         $error = $this->validate([
             'new-prename' => 'required',
@@ -68,7 +64,7 @@ class People extends BaseController
             ]);
 
         if (!$error) {
-            echo view('addPerson', ['error' => $this->validator]);
+            return view('addPerson', ['error' => $this->validator]);
         } else {
             $id = $this->_peopleModel->addPerson(
                 $this->request->getVar('new-prename'),
@@ -79,12 +75,12 @@ class People extends BaseController
                 $this->_session->get('token')
             );
 
+
             if (!empty($id)) {
                 $this->_session->setFlashdata('success', 'Person added');
 
                 $subscribers = $this->_pushNotificationsModel->getAllSubscribers();
-                foreach ($subscribers as $row){
-
+                foreach ($subscribers as $row) {
                     $keys_auth = array(
                         "contentEncoding" => "aesgcm",
                         "endpoint" => $row->endpoint,
@@ -93,10 +89,7 @@ class People extends BaseController
                             "p256dh" => $row->p256dh
                         )
                     );
-
-                    $message = "added";
-
-                    $this->sendMessage($keys_auth, $row->endpoint, $message, $this->request->getVar('new-prename'),  $this->request->getVar('new-surname'));
+                    $this->sendMessage($keys_auth, $row->endpoint, "added", $this->request->getVar('new-prename'), $this->request->getVar('new-surname'));
                 }
 
 
@@ -107,24 +100,17 @@ class People extends BaseController
 
             return $this->response->redirect(site_url("people"));
         }
-
-        echo view('footer');
     }
 
-    function getSinglePerson($id = null)
+    function editPerson($id = null): string
     {
         $data['person'] = $this->_peopleModel->getSinglePerson($id);
-
-        echo view('header');
-        echo view("editPerson", $data);
-        echo view('footer');
+        return view("editPerson", $data);
     }
 
     function editPerson_Validation()
     {
         helper(['form', 'url']);
-
-        echo view('header');
 
         $error = $this->validate([
             'edit-prename' => 'required',
@@ -158,7 +144,7 @@ class People extends BaseController
             $id = $this->request->getVar('id');
             $data['person'] = $this->_peopleModel->getSinglePerson($id);
             $data['error'] = $this->validator;
-            echo view('editPerson', $data);
+            return view('editPerson', $data);
         } else {
             $this->_peopleModel->updatePerson(
                 $this->request->getVar('id'),
@@ -175,8 +161,7 @@ class People extends BaseController
                 $this->_session->setFlashdata('success', 'Person updated');
 
                 $subscribers = $this->_pushNotificationsModel->getAllSubscribers();
-                foreach ($subscribers as $row){
-
+                foreach ($subscribers as $row) {
                     $keys_auth = array(
                         "contentEncoding" => "aesgcm",
                         "endpoint" => $row->endpoint,
@@ -185,10 +170,7 @@ class People extends BaseController
                             "p256dh" => $row->p256dh
                         )
                     );
-
-                    $message = "updated";
-
-                    $this->sendMessage($keys_auth, $row->endpoint, $message, $this->request->getVar('edit-prename'),  $this->request->getVar('edit-surname'));
+                    $this->sendMessage($keys_auth, $row->endpoint, "updated", $this->request->getVar('edit-prename'), $this->request->getVar('edit-surname'));
                 }
 
 
@@ -197,24 +179,19 @@ class People extends BaseController
             }
 
 
-
             return $this->response->redirect(site_url("people"));
         }
-
-        echo view('footer');
     }
 
-    function deletePerson($id)
+    function deletePerson($id): ResponseInterface
     {
         $person = $this->_peopleModel->getSinglePerson($id);
-
 
         if (!empty($id)) {
             $this->_session->setFlashdata('success', 'Person deleted');
 
             $subscribers = $this->_pushNotificationsModel->getAllSubscribers();
-            foreach ($subscribers as $row){
-
+            foreach ($subscribers as $row) {
                 $keys_auth = array(
                     "contentEncoding" => "aesgcm",
                     "endpoint" => $row->endpoint,
@@ -223,10 +200,7 @@ class People extends BaseController
                         "p256dh" => $row->p256dh
                     )
                 );
-
-                $message = "deleted";
-
-                $this->sendMessage($keys_auth, $row->endpoint, $message, $person->prename,  $person->name);
+                $this->sendMessage($keys_auth, $row->endpoint, "deleted", $person->prename, $person->surname);
             }
 
 
@@ -238,13 +212,11 @@ class People extends BaseController
     }
 
 
-
-
     /* ------------------------------------------ Web Push Notifications ---------------------------------------------------- */
 
 
-
-    protected function sendMessage($keys_auth, $endpoint, $message, $prename, $surname){
+    protected function sendMessage($keys_auth, $endpoint, $message, $prename, $surname)
+    {
         $subscription = Subscription::create($keys_auth);
 
         $auth = array(
@@ -276,12 +248,12 @@ class People extends BaseController
         }
     }
 
-    public function push_subscription() {
+    public function push_subscription()
+    {
         $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
         if ($contentType === "application/json") {
             $content = trim(file_get_contents("php://input"));
             $decoded = json_decode($content, true);
-            var_dump($decoded);
 
             if (!isset($decoded['endpoint'])) {
                 echo 'Error: not a subscription';
@@ -290,13 +262,10 @@ class People extends BaseController
 
             $method = $_SERVER['REQUEST_METHOD'];
 
-            echo $method;
 
             switch ($method) {
                 case 'POST':
-                    echo "test";
                     $subscribers = $this->_pushNotificationsModel->getSubscribersByEndpoint($decoded['endpoint']);
-                    print_r($subscribers);
                     try {
                         if (empty($subscribers)) {
                             if ($this->_pushNotificationsModel->insertSubscriber($decoded['endpoint'], $decoded['authToken'], $decoded['publicKey'])) {
@@ -347,10 +316,11 @@ class People extends BaseController
     }
 
 
-    public function send_push_notification() {
+    public function send_push_notification()
+    {
         $subscribers = $this->_pushNotificationsModel->getAllSubscribers();
 
-        foreach ($subscribers as $row){
+        foreach ($subscribers as $row) {
 
             $data = array(
                 "contentEncoding" => "aesgcm",

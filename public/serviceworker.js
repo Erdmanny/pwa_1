@@ -1,9 +1,11 @@
-const CACHE_NAME = "offline";
+const STATIC_CACHE = "offline";
 const OFFLINE_URL = "/fallback";
 const STATIC_ASSETS = [
-    "logo.ico",
-    "manifest.webmanifest",
-    "icon/icon96.png",
+    "/logo.ico",
+    "/manifest.webmanifest",
+    "/icon/icon96.png",
+    "/icon/icon144.png",
+    "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/fonts/bootstrap-icons.woff2?856008caa5eb66df68595e734e59580d",
     "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css",
     "https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css",
     "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css",
@@ -13,24 +15,25 @@ const STATIC_ASSETS = [
     "https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.js",
     "https://unpkg.com/bootstrap-table@1.18.1/dist/extensions/mobile/bootstrap-table-mobile.min.js",
     "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/fonts/bootstrap-icons.woff?856008caa5eb66df68595e734e59580d"
-    // "app.js"
 ];
+
 
 self.addEventListener("install", (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
+        caches.open(STATIC_CACHE).then(cache => {
             cache.addAll(STATIC_ASSETS);
-            cache.add(new Request(OFFLINE_URL, { cache: "reload" }));
+            cache.add(OFFLINE_URL);
         })
     );
     self.skipWaiting();
 });
 
+
 self.addEventListener("activate", (event) => {
     event.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(keys
-                .filter(key => key !== CACHE_NAME)
+                .filter(key => key !== STATIC_CACHE)
                 .map(key => caches.delete(key))
             )
         })
@@ -42,19 +45,10 @@ self.addEventListener("fetch", (event) => {
         event.respondWith(
             (async () => {
                 try {
-                    const preloadResponse = await event.preloadResponse;
-                    if (preloadResponse) {
-                        return preloadResponse;
-                    }
-
-                    const networkResponse = await fetch(event.request);
-                    return networkResponse;
+                    return await fetch(event.request);
                 } catch (error) {
-                    console.log("Fetch failed; returning offline page instead.", error);
-
-                    const cache = await caches.open(CACHE_NAME);
-                    const cachedResponse = await cache.match(OFFLINE_URL);
-                    return cachedResponse;
+                    const cache = await caches.open(STATIC_CACHE);
+                    return await cache.match(OFFLINE_URL);
                 }
             })()
         );
@@ -67,7 +61,6 @@ self.addEventListener("fetch", (event) => {
     }
 
 });
-
 
 
 self.addEventListener('push', event => {

@@ -221,7 +221,7 @@ class People extends BaseController
 
         $auth = array(
             'VAPID' => array(
-                'subject' => 'PHP Codeigniter Web Push Notification',
+                'subject' => 'test@test.de',
                 'publicKey' => env('public_key'),
                 'privateKey' => env('private_key')
             )
@@ -278,24 +278,8 @@ class People extends BaseController
                         echo 'Sorry there has been an error processing your request!';
                     }
                     break;
-                case 'PUT':
-                    $subscribers = $this->_pushNotificationsModel->getSubscribersByEndpoint($decoded['endpoint']);
-                    print_r($subscribers);
-                    try {
-                        if ($subscribers[0]->id !== NULL) {
-                            if ($this->_pushNotificationsModel->updateSubscriber($subscribers[0]->id, $decoded['endpoint'], $decoded['authToken'], $decoded['publicKey'])) {
-                                echo 'Subscription updated successful.';
-                            } else {
-                                echo 'Sorry there is some problem';
-                            }
-                        }
-                    } catch (Exception $error) {
-                        echo 'Sorry there has been an error processing your request!';
-                    }
-                    break;
                 case 'DELETE':
                     $subscribers = $this->_pushNotificationsModel->getSubscribersByEndpoint($decoded['endpoint']);
-                    print_r($subscribers);
                     try {
                         if (!empty($subscribers[0]->id)) {
                             if ($this->_pushNotificationsModel->deleteSubscriber($subscribers[0]->id)) {
@@ -311,56 +295,6 @@ class People extends BaseController
                 default:
                     echo 'Error: method not handled';
                     return;
-            }
-        }
-    }
-
-
-    public function send_push_notification()
-    {
-        $subscribers = $this->_pushNotificationsModel->getAllSubscribers();
-
-        foreach ($subscribers as $row) {
-
-            $data = array(
-                "contentEncoding" => "aesgcm",
-                "endpoint" => $row->endpoint,
-                "keys" => array(
-                    "auth" => $row->auth,
-                    "p256dh" => $row->p256dh
-                )
-            );
-
-            $subscription = Subscription::create($data);
-
-            $auth = array(
-                'VAPID' => array(
-                    'subject' => 'PHP Codeigniter Web Push Notification',
-                    'publicKey' => env('public_key'),
-                    'privateKey' => env('private_key')
-                )
-            );
-
-            $webPush = new WebPush($auth);
-
-            $options = [
-                'title' => 'Test',
-                'body' => 'This is a body',
-                'icon' => base_url() . '/icon/icon128.png',
-                'badge' => base_url() . '/icon/icon128.png',
-                'url' => 'http://localhost'
-            ];
-            $report = $webPush->sendOneNotification(
-                $subscription,
-                json_encode($options)
-            );
-
-            $endpoint = $report->getRequest()->getUri()->__toString();
-
-            if ($report->isSuccess()) {
-                echo "[v] Message sent successfully for subscription {$endpoint}";
-            } else {
-                echo "[x] Message failed to sent for subscription {$endpoint}: {$report->getReason()}";
             }
         }
     }

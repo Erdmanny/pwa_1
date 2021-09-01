@@ -6,10 +6,9 @@
     <link rel="shortcut icon" type="image/x-icon" href="/logo.ico">
     <link rel="manifest" href="/manifest.webmanifest">
     <title>PWA 1</title>
-    <meta name="theme-color" content="#FFE1C4">
+    <meta name="theme-color" content="#0032FF">
 
     <link rel="apple-touch-icon" href="/icon/icon96.png">
-<!--    <meta name="apple-mobile-web-app-status-bar" content="#aa7700">-->
 
 
     <!--Bootstrap CSS-->
@@ -26,9 +25,7 @@
 <nav class="navbar navbar-light bg-light sticky-top">
     <a class="navbar-brand" href="/">PWA 1</a>
     <div class="ml-auto d-flex">
-        <button id="pushButton" class="btn btn-primary mr-2 d-flex justify-content-center align-items-center">Allow
-            Push
-        </button>
+        <button id="pushButton" class="btn btn-primary mr-2 d-flex justify-content-center align-items-center">Push off</button>
         <a href="/logout" class="btn btn-warning mr-2">Logout</a>
         <div class="bg-success d-flex justify-content-center align-items-center p-2">
             Online

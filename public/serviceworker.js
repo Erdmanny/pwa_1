@@ -3,8 +3,14 @@ const OFFLINE_URL = "/fallback";
 const STATIC_ASSETS = [
     "/logo.ico",
     "/manifest.webmanifest",
+    "/icon/icon72.png",
     "/icon/icon96.png",
+    "/icon/icon128.png",
     "/icon/icon144.png",
+    "/icon/icon152.png",
+    "/icon/icon192.png",
+    "/icon/icon384.png",
+    "/icon/icon512.png",
     "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/fonts/bootstrap-icons.woff2?856008caa5eb66df68595e734e59580d",
     "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css",
     "https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css",
@@ -93,22 +99,5 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
     console.log(('[Service Worker] Notification click received.'));
     event.notification.close();
-
-    const url = event.notification.data.url;
-    console.log(url);
-
-    event.waitUntil(clients.matchAll({
-        type: 'window'
-    }).then(clientList => {
-        console.log(clientList);
-        for (let i = 0; i < clientList.length; i++) {
-            let client = clientList[i];
-            if (client.url === self.registration.scope && 'focus' in client) {
-                return client.focus();
-            }
-        }
-        if (clients.openWindow){
-            return clients.openWindow(url);
-        }
-    }));
+    event.waitUntil(clients.openWindow(event.notification.data.url));
 })

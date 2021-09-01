@@ -4,19 +4,12 @@ const applicationServerKey =
 const pushButton = document.getElementById('pushButton');
 
 if (!navigator.serviceWorker) {
-    console.warn('Service workers are not supported by this browser');
+    window.alert('Service workers are not supported by this browser')
 }
 
 if (!window.PushManager) {
     console.warn('Push notifications are not supported by this browser');
-}
-
-if (!ServiceWorkerRegistration.prototype.showNotification) {
-    console.warn('Notifications are not supported by this browser');
-}
-
-if (Notification.permission === 'denied') {
-    console.warn('Notifications are denied by the user');
+    pushButton.style.visibility = "hidden";
 }
 
 
@@ -43,9 +36,9 @@ if (pushButton !== null) {
             serviceWorkerRegistration.pushManager.getSubscription())
         .then(subscription => {
             if (subscription === null) {
-                pushButton.textContent = 'Allow Push';
+                pushButton.textContent = 'Push off';
             } else {
-                pushButton.textContent = 'Stop Push';
+                pushButton.textContent = 'Push on';
             }
         });
 
@@ -60,11 +53,11 @@ if (pushButton !== null) {
                         .then(res => {
                             console.log("subscribe: " + res);
                         });
-                    pushButton.textContent = 'Stop Push';
+                    pushButton.textContent = 'Push on';
                 } else {
                     if (confirm("are you sure you want to unsubscribe?")) {
                         push_unsubscribe();
-                        pushButton.textContent = 'Allow Push'
+                        pushButton.textContent = 'Push off'
                     }
                 }
             });
@@ -134,10 +127,8 @@ function push_unsubscribe() {
             if (!subscription) {
                 return;
             }
-            return push_sendSubscriptionToServer(subscription, 'DELETE');
-        })
-        .then(subscription => {
             subscription.unsubscribe();
+            return push_sendSubscriptionToServer(subscription, 'DELETE');
         })
         .catch(e => {
             console.error('Error when unsubscribing the user', e);
@@ -147,7 +138,6 @@ function push_unsubscribe() {
 function push_sendSubscriptionToServer(subscription, method) {
     const key = subscription.getKey('p256dh');
     const token = subscription.getKey('auth');
-    const contentEncoding = (PushManager.supportedContentEncodings || ['aesgcm'])[0];
 
     return fetch('http://localhost/people/push_subscription', {
         method,
@@ -159,9 +149,8 @@ function push_sendSubscriptionToServer(subscription, method) {
         body: JSON.stringify({
             "endpoint": subscription.endpoint,
             "publicKey": key ? btoa(String.fromCharCode.apply(null, new Uint8Array(key))) : null,
-            "authToken": token ? btoa(String.fromCharCode.apply(null, new Uint8Array(token))) : null,
-            contentEncoding
+            "authToken": token ? btoa(String.fromCharCode.apply(null, new Uint8Array(token))) : null
         }),
-    }).then(() => subscription);
+    });
 }
 

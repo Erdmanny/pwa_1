@@ -8,7 +8,7 @@
     <title>PWA 1</title>
     <meta name="theme-color" content="#0032FF">
 
-    <link rel="apple-touch-icon" href="/icon/icon96.png">
+    <link rel="apple-touch-icon" href="/icon/icon192.png">
 
     <!--Bootstrap CSS-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">

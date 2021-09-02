@@ -188,6 +188,8 @@ class People extends BaseController
         $person = $this->_peopleModel->getSinglePerson($id);
 
         if (!empty($id)) {
+            $this->_peopleModel->deletePerson($id);
+
             $this->_session->setFlashdata('success', 'Person deleted');
 
             $subscribers = $this->_pushNotificationsModel->getAllSubscribers();
@@ -207,7 +209,6 @@ class People extends BaseController
         } else {
             $this->_session->setFlashdata('error', 'There was a mistake deleting a person.');
         }
-        $this->_peopleModel->deletePerson($id);
         return $this->response->redirect(site_url("people"));
     }
 

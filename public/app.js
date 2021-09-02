@@ -25,6 +25,15 @@ function initServiceWorker() {
 
 initServiceWorker();
 
+// reloads page when back online
+window.addEventListener('online', () => {
+    location.reload();
+})
+
+// reloads page when offline
+window.addEventListener('offline', () => {
+    location.reload();
+})
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// Push Notifications ///////////////////////////////////////////////////////////
@@ -57,7 +66,7 @@ if (pushButton !== null) {
                 } else {
                     if (confirm("are you sure you want to unsubscribe?")) {
                         push_unsubscribe();
-                        pushButton.textContent = 'Push off'
+                        pushButton.textContent = 'Push off';
                     }
                 }
             });
@@ -150,7 +159,7 @@ function push_sendSubscriptionToServer(subscription, method) {
             "endpoint": subscription.endpoint,
             "publicKey": key ? btoa(String.fromCharCode.apply(null, new Uint8Array(key))) : null,
             "authToken": token ? btoa(String.fromCharCode.apply(null, new Uint8Array(token))) : null
-        }),
+        })
     });
 }
 
